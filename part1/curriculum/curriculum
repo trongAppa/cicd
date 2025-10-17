@@ -1,0 +1,23 @@
+입문단계(이미지와 컨테이너를 관리하는 단계)
+1.  컨테이너 가상화 이해 -> 컨테이너 가상화 기술리뷰
+2.  Docker 플랫폼 구성 -> Docker 엔진 구성을 위한 환경 구성
+3.  Docker 엔진 -> 최신 Docker 엔진 사용
+4.  Docker 이미지 관리 -> 이미지 pull / push와 registry 이해 (!중요)
+5.  Docker 컨테이너 관리 -> 컨테이너 관리를 위한 CLI (!중요)
+기본(운영하는 단계)
+6.  Docker network -> 컨테이너 서비스를 위한 네트워크 (!중요)
+7.  컨테이너 자원관리 -> 컨테이너 자원관리와 모니터링 (!중요)
+8.  Docker Volume -> 데이터 지속성을 위한 Docker Volume (!중요)
+9.  Dockerfile -> 컨테이너 인프라 구성, Dockerfile (인프라 만드는 것) 
+10. Docker compose -> 멀티컨테이너 서비스, Docker compose (MSA의 기본 인거 같은데)
+실무
+11. Docker swarm -> 컨테이너 orchestration 도구 활용 (클러스트 처리에 사용)
+12. Docker CI -> Docker CI를 위한 Gitaction workflow
+13. AWS ECS 서비스 -> AWS ECS와 ECR 구성
+14-1. My Diary pilot project -> VM 기반의 3-tier pilot project (project1.png 그림 참조)
+14-2. My Diary pilot project -> AWS ECS 기반의 3-tier pilot project (project2.png 그림 참조)
+
+기술스택
+Oracle VM + Ubuntu 22.04 + Docker latest
+github + gitAction + Jenkins CI/CD
+AWS Cloud ECS & ECR
