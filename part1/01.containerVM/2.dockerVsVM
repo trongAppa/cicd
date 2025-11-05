@@ -1,0 +1,25 @@
+컨테이너 trend history
+- 1991 ~ : Linux 프로세스 격리 - LXC(도커의 첫 모델) - 커널기술
+- 2010 ~ : Virtual Machine 가상화기술 - VMWare, virtualBox - 가상화시장 붐
+- 2013 ~ : Container 가상화기술 - docker - 단편적으로 이용할 수 있도록 docker 출범, 사용하기 쉽고 편안함
+- 2015 ~ : Container Orchestration tool - Kubernetes, AWS - 중앙 관리도구 -> CICD 기술을 포함시켜 발전
+
+가상화(virtualization)란?
+- 서버, 스토리지, 네트워크, 애플리케이션 등 가상화 하여 하드웨어 리소스를 효율적으로 사용하는 데 목적이 있음
+- 자동화된 IT 관리, 빠른 재해 복구 등의 장점 존재
+- 물리적인 하드웨어 유지 관리 대신 소프트웨어적으로 추상화된 가상화를 통해 제한된 부분을 쉽게 관리, 유지
+- 하이퍼바이저 기반의 가상머신(VM, Virtual Machine)을 통해 수행
+
+컨테이너 가상화 vs VM 가상화
+- 두가지 가상화는 이미지화 하여 HostOS와 격리된 환경을 제공
+- VM 가상화는 GustOS(Kernel)를 두고 원하는 애플리케이션을 설치하는 하드웨어 수준의 가상화를 구현 - Booting 필요
+- 컨테이너 가상화는 VM 가상화에 비해 경량이면서 호스트 운영체제의 커널을 공유하는 운영체제(OS) 수준의 가상화를 구현 - Booting 없음 프로세스 기동
+- 컨테이너 가상화는 원하는 애플리케이션 환경을 빠르게 번들링하여 패키징
+- applicationDistribution.png 참조
+
+컨테이너화(containeriztation) 기술
+- 리눅스 컨테이너 기술은 LXC를 이용한 시스템 컨테이너화로 시작
+- 애플리케이션 컨테이너 기반의 Docker 출시
+- containerd, runC를 이용하는 방식으로 변경
+- Docker 기술 진화 - containerVirtualization.png 참조
+- DockerD - CLI처리
