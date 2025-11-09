@@ -1,0 +1,27 @@
+Ubuntu22.04 OS(jellyfish)
+- https://ubuntu.com/download/desktop 다운로드
+
+- Oracle VirtualBox 관리자 실행
+- 새로 만들기
+- VM Name 설정, 경로 설정, OS = Linux, OS Distribution = Ubuntu, OS Version = Ubuntu(64-bit)
+- Specify virtual hardware 확장 : Base Memory = 4096MB, CPU = 4(추천 8192 / 4)
+- Specify virtual hard disk : 100GB 까지 사용하겠다 설정
+- 설정 
+ - 시스템(마더보드) : 1번 광디스크 , 2번 하드 디스크
+ - 시스템(프로세스) : 컴퓨터 기능에 따라 PAE/NX 기능 활성화할 것
+ - 디스플레이 : 화면이 먹통일 경우 그래픽카드(VBoxVGA)
+ - 저장소 : 컨트롤러 IDE -> ubuntu ios 선택
+          컨트롤러 SATA(docker, DB등을 두기 위한 디스크 추가) - 만들기(VDI디스크로 만들면됨)
+ - 네트워크 : 어댑터 2에 호스트 전용 어댑터 활성화
+ 
+- 시작으로 부팅할 것
+- 우분투 설치
+- 언어는 영어(US) . 한글은 깨짐 현상 발생가능성 있음
+- normal 설치 download updates 체크박스 해제
+- 디스크를 설정하는 걸로 something else 선택
+- sda - OS용 / sdb - docker용
+- 파티션 이미지 참고해서 설정할 것( sd_list.png / sda1.png / sda2.png / sda3.png / sda4.png / sdb1.png )
+ - SDA1 선택 후 디스크 설치
+- 타임존 서울로 설정
+- ID : geonju / Hostname : hostos1 / Pw : pass123#
+- 설치 후 재기동

@@ -1,0 +1,104 @@
+설치 고려사항 
+- 리눅스 커널 정보(3.10 이상) 
+- 64비트 확인(x86_64)
+- uname -a 확인가능
+
+docker 사용 패키지 설치
+- apt-transport-https : HTTPS 통신을 하기 위해 필요
+- ca-certificates : SSL에 필요한 인증서기능 제공
+- curl : API 통신
+- gnupg-agent : 패키지에 대한 보호기능 제공
+- software-properties-common : 도커 리파지토리 기능제공
+
+$sudo apt-get install -y \
+> apt-transport-https \
+> ca-certificates \
+> curl \
+> gnupg-agent \
+> software-properties-common
+
+ubuntu 22 버전부터 보안이 강화되어 키링사용해야됨
+# Docker의 공식 GPG(GNU Privacy Guard) key를 추가
+- $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+- $ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+# docker에서 제공하는 GPG key 추가 확인(키링)
+- $ sudo apt-key fingerprint
+- $ sudo apt-key fingerprint 0EBFCD88
+
+# apt repository source에 docker repo 추가. (keyring 포함)
+- $ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# docker repository 추가하여 update 수행
+- $ sudo apt update
+
+update시 docker E 발생시
+- GPG Key 확인할 것
+
+
+# docker에서 제공하는 docker-ce 버전 확인
+- $ sudo apt-cache policy docker-ce
+
+# 최신 docker version 설치
+- $ sudo apt -y install docker-ce
+
+$ sudo docker version
+
+# docker 그룹에 현재 사용 중인 계정(kevin)을 등록하여 sudo 없이 docker 명령을 사용 가능하게 함
+- $ sudo usermod -aG docker kevin
+- $ sudo systemctl daemon-reload
+- $ sudo systemctl enable docker
+- $ sudo systemctl restart docker
+- $ sudo systemctl status docker
+
+# 신규 세션으로 접속 or sudo reboot을 통해 kevin 사용자 재접속 시 docker version 사용 가능
+kevin@hostos1:~$ docker version
+
+- [참고] CentOS 7 docker engine 설치
+cd /etc/yum.repos.d
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+ls
+yum repolist 
+vi docker-ce.repo
+yum -y install docker-ce && yum -y update
+mkdir -p /etc/systemd/system/docker.service.d
+systemctl daemon-reload
+systemctl enable --now docker
+systemctl start docker
+systemctl status docker
+
+# docker 설치 완료 확인
+docker version
+
+- docker 제공 shell 사용
+# docker 에서 제공하는 shell script을 이용한 자동 설치
+curl -fsSL https://get.docker.com -o get-docker.sh
+# shell script 내용 확인 후 변경 가능
+sudo vi get-docker.sh
+# 실행 권한 부여
+chmod +x get-docker.sh
+# 설치
+sudo sh get-docker.sh
+
+- docker 삭제
+$ dpkg -l | grep -i docker
+ii docker-ce 5:18.09.3~3-0~ubuntu-xenial
+amd64 Docker: the open-source application container engine
+ii docker-ce-cli 5:18.09.3~3-0~ubuntu-xenial
+amd64 Docker CLI: the open-source application container engine
+rc docker.io 18.06.1-0ubuntu1.2~16.04.1
+amd64 Linux container runtime
+
+$ sudo apt-get purge -y docker.io
+$ sudo apt-get autoremove -y --purge docker.io
+$ sudo apt-get autoclean
+$ sudo apt purge docker-ce
+
+# Host에 image, directory, 볼륨, 또는 사용자 생성 구성 파일을 제거
+$ sudo rm /etc/apparmor.d/docker
+$ sudo rm -rf /var/lib/docker
+$ sudo groupdel docker
+$ sudo apt-get purge docker-engine
+$ sudo apt-get autoremove --purge docker-engine

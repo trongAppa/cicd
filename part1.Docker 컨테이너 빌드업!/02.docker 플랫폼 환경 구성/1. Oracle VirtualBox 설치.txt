@@ -1,0 +1,6 @@
+리눅스 공부 필수
+
+CMOS에서 가상화 기술 활성화 처리 필요
+
+VirtualBox 설치(네트워크 연결 확인가능)
+- https://www.virtualbox.org/wiki/Downloads -> 운영체제 맞게 설치
