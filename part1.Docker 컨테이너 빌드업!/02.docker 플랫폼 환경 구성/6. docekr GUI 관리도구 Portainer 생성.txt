@@ -1,0 +1,12 @@
+웹 GUI 기반의 docker 컨테이너 관리도구, Portainer
+- 관리하는데 사용할 수 있는 컨테이너된 애플리케이션을 위한 서비스 제공 플랫폼
+- https://hub.docker.com/r/portainer/portainer-ce
+
+- $ docker pull portainer/portainer-ce
+- $ docker volume create portainer_data
+- $ docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data --restart=always portainer/portainer-ce
+
+- 보통 9000포트로 사용
+- window에서 호출해서 사용 가능 : http://192.168.56.101:9000/
+- GUI를 사용하기 때문에 컨테이너 관리하기 용이
+- 앱 템플릿을 제공하기에 컨테이너를 생성하기 편하다
