@@ -1,0 +1,111 @@
+실습 시나리오
+ubuntu와 docker를 호환성을 맞추고 최신 버전 업데이트 진행
+1) 기존 실행중인 컨테이너 중지
+2) 현재 사용중인 docker 엔진 삭제
+3) 최신 버전 docker 엔진 설치
+4) 운영 중인 컨테이너 기동
+5) If, error 발생시 원인 파악, 문제해결
+6) 필요에따라 ubuntu도 업데이트 진행
+
+실습환경 설정
+ubuntu18.04 설치 필요
+https://releases.ubuntu.com/18.04/
+
+docker 구버전 설치
+
+update local database
+로컬 package 리스트 정보에 대한 DB를 최신화
+- $ sudo apt-get update
+
+Download Dependencies
+OS가 Docker repo에 HTTPS로 접근하는 것을 허용하기 위해 다음을 설치
+- $ sudo apt-get install apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+
+apt-transport-https : 패키지 매너저가 file과 data 전송을 https를 통해 전송하는 것을 허용
+ca-certificates : 시스템(혹은 웹브라우저)가 보안 인증서를 확인하는 것을 허용
+curl : data 전송을 위한 tool
+software-properties-common : software를 관리하는 script를 추가
+
+Add Docker's GPG Key
+GPG Key는 software를 인증된(GPG key를 알고 있는) 유저만 설치할 수 있도록 보장하는 Key
+- $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+docker key 등록 확인
+- $ sudo apt-key fingerprint 0EBFCD88
+
+Install the Docker Repository
+t4g.micro는 ARM CPU만 지원, Docker 역시 x86, amd64, arm64를 지원한다. 따라서 ARM기반으로 Docker를 설치
+- $ sudo add-apt-repository \
+    "deb [arch=arm64] https://download.docker.com/linux/ubuntu  \
+	$(lsb_release -cs) \
+	stable" 
+
+Stable release가 테스트되고 정상 작동되는 것을 확인
+
+Update Repositories
+- $ sudo apt-get update
+
+Install Specific Version of Docker
+설치가능 버전 확인(안 나올 경우 Add Docker's GPG Key 해당 부분 확인필요, docker 키등록으로 확인가능)
+- $ apt-cache madison docker-ce
+
+특정버전 설치(버전은 설치가능 버전 코드 전부 복사해서 사용 할 것)
+- $ sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> containerd.io
+
+docker 설치 버전 확인
+- $ sudo docker version
+- $ sudo docker run hello-world
+
+docker 권한주기
+권한 확인
+- $ cat /etc/group | grep docker
+- $ sudo usermod -aG docker 사용할아이디
+- $ sudo reboot
+- $ docker version
+
+httpd 2.4와 nginx 1.9 이미지 도커에 설치하기 (httpd 설치 못함..)
+- $ docker pull nginx:1.9
+- $ docker pull httpd:2.4
+
+httpd 설치시 manifest.v2+json 에러 발생(도커 업데이트 후 재설치 진행)
+
+준비완료(docker 19.03.3 / ubuntu 18.04.3 LTS / nginx)
+
+OS 버전 확인
+- $ uname -ar
+- $ cat /etc/os-release
+
+docker version 확인
+- $ docker version
+
+docker 이미지 실행
+- $ docker run -d -p 9001:80 --name=nginx-web nginx:1.19
+
+- $ docker ps
+
+docker update방법
+apt를 사용하여 docker를 삭제 후 최신버전으로 설치
+apt를 사용하여 docker 삭제 전에 컨테이너를 삭제하거나, docker를 삭제시 강제 중단됨
+- $ sudo apt update
+- $ sudo apt -y remove docker-ce
+- $ sudo apt -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+
+gpg key down
+- $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+docker repository 등록
+- $ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] http://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+docker 최신버전다운 및 필요도구도 업데이트 진행
+- $ sudo apt -y install docker-ce
+- $ sudo apt -y install docker-ce-cli containerd.io
+
+기존에 가지고 있는 컨테이너를 재기동 및 실행하면 됨
+- $ docker run -d -p 9002:80 --name=httpd-web httpd:2.4
+
+docker 구동중에 cgroup mountpoint error 발생시
+- $ sudo mkdir /sys/fs/cgroup/systemd
+- $ sudo mount -t cgroup -o none,name=systemd cgroup sys/fs/cgroup/systemd
