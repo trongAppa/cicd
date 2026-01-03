@@ -1,0 +1,49 @@
+docker image
+- Container runtime에 필요한 바이너리, 라이브러리 및 설정 값 등을 포함하고, 변경되는 상태 값을 보유하지 않고(stateless) 변하지 않음(Immutable, RO)
+- 일반적인 컨테이너 애플리케이션 서비스 개발 과정
+ 1) 애플리케이션 코드 개발
+ 2) 베이스이미지를 이용한 Dockerfile 작성
+ 3) Dockerfile build를 통한 새로운 이미지 생성
+ 4) 생성된 이미지를 이용한 컨테이너 실행
+ 5) (선택) 도커컴포즈를 이용한 다중 컨테이너 실행
+ 6) (5번 선택 이후) 마이크로서비스 테스트
+ 7) 컨테이너 애플리케이션 서비스 테스트
+ 8) 로컬 및 원격 저장소에 이미지 저장(push)
+ 9) Github 등을 활용한 Dockerfile 관리
+ 10) 동일환경에서의 지속적 애플리케이션 개발 수행
+ 
+- docker image 관련 명령어 workflow
+ build
+ ls
+ rm
+ tag - 이름표 달기
+ inspect
+ history
+ run - 테스트
+ load
+ image - 이미지 생성
+ images - 보유 이미지 확인 
+ search
+ pull - docker hub registry download
+ push - docker hub registry upload(tag 필수)
+ save
+ 
+- 이미지 내려 받기(pull)
+ docker [image] pull [options] name:[tag]
+ 
+ docker pull debian
+ 
+ private registry 나 클라우드의 저장소의 이미지를 다운시
+ docker pull 192.168.56.101:5000/debian:10
+ docker pull gcr.io/google-samples/hello-app:1.0
+ 
+- 이미지 구조 확인(image)
+ image 내부 구조 정보를 json 형태로 제공
+ docker image inspect [tag]
+ docker image inspect --format="[findOption]" [tag] 
+ 
+ 이미지 history 정보 제공
+ docker image history [tag] --no-trunc(옵션 안날리고 보기) > 
+ hub.docker.com에 로그인 후 해당 tag 검색 후 히스토리 확인하면 좋음
+ 
+ 
