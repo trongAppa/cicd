@@ -1,0 +1,35 @@
+- 이미지 업로드 (push)
+ registry 확인 
+  curl -X GET http://192.168.56.101:5000/v2/myweb/tags/list
+  
+ 업로드 이미지 태그 생성
+  docker image tag myweb:v1.1 192.168.56.101:5000/myweb:v1.1
+  
+ 이미지 업로드
+  docker push 192.168.56.101:5000/myweb:v1.1
+
+ client에서 registry 확인
+  curl -X GET http://192.168.56.101:5000/v2/_catalog
+  curl -X GET http://192.168.56.101:5000/v2/myweb/tags/list
+  
+  docker pull 192.168.56.101:5000/myweb:v1.0
+  
+pull 작업시 error 발생하면
+1. (수정) sudo vi /etc/init.d/docker
+
+항목 추가
+DOCKER_OPTS=--insecure-registry 192.168.56.101:5000
+
+저장
+2. (신규) sudo vi /etc/docker/daemon.json
+
+{ "insecure-registries": ["192.168.56.101:5000"] }
+
+저장
+3. 도커 재시작
+sudo systemctl restart docker.service
+
+php서버 테스트
+registry upload server : 해당 폴더로 이동 -> build -> image 확인 -> 구동테스트 -> image tag 작업 -> image registry push
+
+client server : docker pull -> docker run -> test

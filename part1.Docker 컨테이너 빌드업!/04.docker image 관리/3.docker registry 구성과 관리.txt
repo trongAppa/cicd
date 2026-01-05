@@ -1,0 +1,37 @@
+docker container registry
+public registry 올리지 않고 회사 내에서 private registry를 사용
+ 
+registry 다운로드
+docker pull registry
+ 
+registry docker 실행
+docker run -d \
+-v /home/kevin/registry_data:/var/lib/registry \
+-p 5000:5000 \
+--restart=always \
+--name=local-registry \
+registry
+
+registry 정상 구동 확인
+curl -X GET http://192.168.56.101:5000/v2/_catalog
+
+image에 태그 달기
+docker image tag myweb:v1.0 192.168.56.101:5000/myweb:v1.0
+
+push
+docker push 192.168.56.101:5000/myweb:v1.0
+
+error 발생시 신규 registry의 경로를 docker에 등록하는 작업필요
+1. (수정) sudo vi /etc/init.d/docker
+
+항목 추가
+DOCKER_OPTS=--insecure-registry 192.168.56.101:5000
+
+저장
+2. (신규) sudo vi /etc/docker/daemon.json
+
+{ "insecure-registries": ["192.168.56.101:5000"] }
+
+저장
+3. 도커 재시작
+sudo systemctl restart docker.service
