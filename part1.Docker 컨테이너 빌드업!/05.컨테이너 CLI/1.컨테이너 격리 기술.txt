@@ -1,0 +1,19 @@
+프로세스 격리 기술 
+chroot - 프로세스의 루트 디렉토리를 변경, 격리하여 가상의 루트 디렉터리를 생성
+pivot-root - 루트 파일시스템 자체를 바꿔, 컨테이너가 전용 루트 파일시스템을 가지도록 함(chroot 보완)
+Mount namespace - namespace 내에 파일 시스템 트리를 구성
+UTS namespace - 컨테이너에 대한 hostname 격리를 수행하여 고유한 hostname 보유 가능
+PID namespace - PID와 프로세스를 분리(systemd와 분리)
+Network namespace - 네트워크 리소스(IP, Port, route table, ethernet 등) 할당
+IPC namespace - 전용의 process table 보유
+
+lifecycle
+run(생성 및 시작)(create(생성) -> start(시작)) -> stop(중지) -> rm(삭제)
+create - image의 snapshot /var/lib/docker 영역에 생성
+start - 읽고 쓰기가 가능한 process / container layer를 생성, 동적 컨테이너를 구성
+stop - container layer 삭제
+rm - snapshot을 삭제
+
+container?
+process / image snapshot
+생성된 정보는 container layer + snapshot 영역에 저장

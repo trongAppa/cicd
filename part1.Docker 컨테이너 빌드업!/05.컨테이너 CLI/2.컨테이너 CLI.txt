@@ -1,0 +1,86 @@
+option
+-i, --interactive : 대화식 모드 열기
+-t : TTY(단말 디바이스) 할당
+-d, --detach=true : 백그라운드에서 컨테이너 실행하고 컨테이너ID 등록
+--name : 실행되는 컨테이너에 이름 부여(미 지정시 자동으로 부여됨:딕셔너리 워드 랜덤 선택)
+--rm : 컨테이너 종료시 자동으로 컨테이너 삭제
+--restart : 컨테이너 종료시 적용할 재시작 정책 지정([no | on-failure | on-failure:n | always])
+--env, -e : 컨테이너의 환경변수 지정(--env-file은 여러 환경 변수를 파일로 생성하여 지정하는 방법)
+-v, --volume=hostPath:containerPath : 호스트와 컨테이너 경로의 공유 볼륨 설정(Bind mount)
+-h : 컨테이너의 호스트명 지정(미 지정시 컨테이너 ID가 호스트명으로 등록)
+-p [hostPort]:[containerPort], --publish : 호스트와 컨테이너 포트 연결
+-P, --publish-all=[true|false] : 컨테이너 내부의 노출된(expose) 포트를 호스트 임의의 포트에 게시
+--workdir, -w : 컨테이너 내부의 작업 경로(디렉터리)
+
+자원정보 관리
+docker top : 컨테이너에서 실행 중인 프로세스 조회
+docker port : 매핑된 포트 노출
+docker stats : 리소스 사용 실시간 스트림 출력
+docker logs : 로그창
+docker inspect : 컨테이너 내부 구조 정보 확인
+docker cp : 파일 복사
+docker restart : 컨테이너 재시작
+docker stop : 컨테이너 중지 후 삭제
+docker start : 컨테이너 시작
+docker pause : 컨테이너 일시중지
+docker unpause : 컨테이너 일시정지 해제
+docker kill : 컨테이너 강제 중지
+docker event : 실시간 이벤트 출력
+# --until time(h|m|s), --since startDate endDate, --filter "key=value"
+docker exec -it [container] sh : bash 접속 작업용
+docker attach : 내부에 돌아가는 로그나 정보를 출력할 때 사용
+docker diff : 변동사항 체크
+docker commit : 변동된 사항을 포함하여 이미지를 새로만드는 단어
+docker export : 실행 중인 컨테이너의 파일 시스템을 tar archive로 내보냄(backup, migration) - 파일 시스템으로 사용(save는 layer 기준으로 함으로 다름)
+docker import : export한 것을 내려받음, 데몬이 없어 해당 이미지를 구동시킬 수 없음
+
+C-advisor - google에서 제공하고 관리하는 오픈소스 컨테이너 모니터링 도구(stats와 동일한 기능)
+
+docker info | grep -i log
+
+로그파일 로테이션 size 제한(docker 전체)
+sudo vi /etc/docker/daemon.json
+{ 
+	"insecure-registries": ["192.168.56.101:5000"],
+	"log-driver": "json-file",
+	"log-opts": {
+		"max-size": "30m",
+		"max-file": "10"
+	}
+}
+
+구동시 컨테이너 단위로 로그 설정
+docker run -itd -p 6062:6060 --name=node-run2 \
+> -h node-run --log-driver json-file --log-opt max-size=30m --log-opt max-file=10 \
+> noderun:1.0
+
+exit code(?)
+0 : 의도적으로 중지 | 컨테이너가 자동으로 중지되었음을 나타내기 위해 개발자가 사용
+1 : 신청 오류 | 애플리케이션 오류 또는 이미지 사양의 잘못된 참조로 인해 컨테이너가 중지됨
+125 : 컨테이너 실행 실패 오류 | docker run 명령이 성공적으로 실행되지 않음
+126 : 명령 호출 오류 | 이미지 사양에 지정된 명령을 호출할 수 없음
+127 : 파일 또는 디렉터리를 찾을 수 없음 | 이미지 사양에 지정된 명령을 호출할 수 없음
+128 : 종료시 잘못된 인수가 사용되었습니다. | 잘못된 종료 코드로 종료가 실행됨(유효한 코드는 0-255 사이의 정수)
+134 : 비정상 종료(SIGABRT) | 컨테이너가 abort() 함수를 사용하여 자체적으로 중단됨
+137 : 즉지 종료(SIGKILL) | 컨테이너가 SIGKILL 신호를 통해 운영 체제에 의해 즉시 종료됨
+139 : 분할 결함(SIGSEGV) | 컨테이너가 할당되지 않은 메모리에 엑세스하려고 시도하여 종료됨
+143 : 단계적 종료(SIGTERM) | 컨테이너가 곧 종료될 것이라고 경고를 받은 후 종료됨(graceful)
+255 : 종료 상태가 범위를 벗어남 | 컨테이너가 종료되어 허용 가능한 범위를 벗어난 종료 코드를 반환, 오류의 원인을 알 수 없음을 의미
+
+diff symbol
+A : added
+C : change
+D : delete
+
+import 후 run을 하려고 할 때 error 발생시 
+import 시 CMD를 추가
+docker import --change 'CMD ["node", "/app/runapp.js"]' node-run.tar node-run:3.0
+
+import된 이미지를 Dockerfile에 CMD를 추가하여 새로 빌드
+cat node-run.tar | docker import - node-run:4.0
+vi Dockerfile_noderun4
+
+FROM node-run:4.0
+CMD ["node", "/app/runapp.js"] 
+
+docker build -t node-run:5.0 -f Dockerfile_noderun4 .
